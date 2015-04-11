@@ -1,28 +1,45 @@
 #include <iostream>
 #include <unistd.h>
 #include <string>
+#include <stdio.h>
 
 using namespace std;
 
-#define BUFFER_LEN 80;
+int BUFFER_SIZE = 256;
 
 int main() {
-    // ssize_t write(int fd, const void *buf, size_t count);
-    const char *buf = "osh>";
-    // A c string of the path from the home directory to the working directory.
-    char wd[80];
-    getcwd(wd, 80);
+    // C string to store the current working directory
+    char wd[BUFFER_SIZE];
 
-    string wds = wd;
+    // Get the current working directory
+    getcwd(wd, BUFFER_SIZE);
 
-    cout << "size of: " << wds.length() << endl;
-    // Check to see if the return value of write which tells us if the function succeeded or not.
-    size_t nr;
-    // should_run intially set to 1, so our program will at least iterate once.
-    int should_run = 1;
+    // Store wd into a c++ string and get the length of the working directory.
+    string wd2 = wd;
+    string prompt = wd2;
+    int wd2Len = wd2.length();
 
-    do {
-//        write(1, wd, 80);
-//        read(0, wd, 80);
-    } while(should_run);
+    if (wd2Len > 16) {
+        // Find the position of the last occurrence of a / symbol.
+        int pos = wd2.rfind('/');
+        prompt = "/..." + wd2.substr(pos) + "/>";
+//        printf("%s", prompt.c_str());
+    }
+
+    // Writing out the prompt to the screen.
+    write(STDOUT_FILENO, prompt.c_str(), prompt.length());
+
+    // temporary cin for testing to see how the prompt looks like.
+//    string input;
+//    cin >> input;
+
+    // C string to store the users input.
+    char ui[BUFFER_SIZE];
+
+    read(STDIN_FILENO, ui, BUFFER_SIZE);
+    string temp = ui;
+    write(STDOUT_FILENO, temp.c_str(), temp.length());
+
+
+//    printf("%s is of length: %d \n", wd2.c_str(), int(wd2.length()));
 }
